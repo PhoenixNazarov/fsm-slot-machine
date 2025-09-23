@@ -2,3 +2,20 @@ body {
     min-height: 100vh;
     margin: 0;
 }
+
+.state-pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--panel-2);
+    border: 1px solid rgba(255,255,255,.08);
+    font-weight: 700; font-size: 12px;
+}
+.state-pill.s0 { box-shadow: 0 0 0 1px rgba(45,212,191,.25) inset; }
+.state-pill.s1 { box-shadow: 0 0 0 1px rgba(255,209,102,.25) inset; }
+.state-pill.s2 { box-shadow: 0 0 0 1px rgba(0,229,255,.25) inset; }
+.state-pill.s3 { box-shadow: 0 0 0 1px rgba(255,90,122,.25) inset; }
+.state-pill.s4 { box-shadow: 0 0 0 1px rgba(124,77,255,.25) inset; }
+
+.log-group { background: var(--panel); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px 10px; }
+.log-group .title { font-weight: 900; margin-bottom: 6px; color: #b8c1ff; }
+.log-group label { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; font-size: 12px; color: var(--muted); }
