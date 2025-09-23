@@ -346,7 +346,7 @@ class TAutomatonMultiply extends TAutomaton {
         break
       }
       case 5: { // Игра - Монетоприемник закрыт - Второй барабан остановлен
-        if (Event === 5) { // TODO
+        if (Event === 5) { // TODO: change
           this.env().z27(); this.env().z28();
         }
         if ((Event === 5) && this.x01 && this.x02) {
