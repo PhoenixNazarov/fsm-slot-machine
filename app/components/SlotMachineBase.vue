@@ -60,6 +60,12 @@
               </div>
             </div>
             <button class="btn tech-reset" @click="onTechReset">Тех. сброс</button>
+            <div style="position:absolute; height: 60px; width: 10px; bottom: calc(50% + 14px); right: 5px; transform: translateY(50%);"
+                 :style="{
+                    'background-color': isTrayClosed ? '#777777' : '#fefefe',
+                 }"
+            >
+            </div>
 
           </div>
 
