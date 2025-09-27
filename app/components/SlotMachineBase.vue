@@ -1,73 +1,118 @@
 <template>
-  <div class="app">
-    <header class="header">
-      <h1>{{ title }}</h1>
-      <div class="states">
-        <slot name="states"></slot>
+  <div class="win32-app">
+    <div class="win32-window">
+      <div class="win32-title-bar">
+        <div class="win32-title">{{ title }}</div>
       </div>
-    </header>
 
-    <section class="panel">
-      <div class="meters">
-        <div class="meter">
-          <div class="label">Банк</div>
-          <div class="value">{{ edBank }}</div>
+      <div class="win32-content">
+        <!-- Left side: Slot machine and tokens -->
+        <div class="left-panel">
+          <!-- Slot machine panel -->
+          <div class="slot-panel">
+            <!-- Reels -->
+            <div style="display: flex; gap: 20px;">
+              <div class="reels">
+                <div class="reel" :class="{ spinning: timerSync1Running }">
+                  <div class="symbols-container">
+                    <div class="symbol">{{ getBarrelNumber(barrel1) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel1) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel1) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel1) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel1) }}</div>
+                  </div>
+                </div>
+                <div class="reel" :class="{ spinning: timerSync2Running }">
+                  <div class="symbols-container">
+                    <div class="symbol">{{ getBarrelNumber(barrel2) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel2) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel2) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel2) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel2) }}</div>
+                  </div>
+                </div>
+                <div class="reel" :class="{ spinning: timerSync3Running }">
+                  <div class="symbols-container">
+                    <div class="symbol">{{ getBarrelNumber(barrel3) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel3) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel3) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel3) }}</div>
+                    <div class="symbol add">{{ getBarrelNumber(barrel3) }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="meter">
+                <div class="label">Банк</div>
+                <div class="value">{{ edBank }}</div>
+              </div>
+              <div class="meter">
+                <div class="label">Ставка:</div>
+                <div class="value">{{ edStake }}</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 37px;">
+              <button class="btn game" style="height: 50px" @click="onPlay">Игра</button>
+              <button class="btn return" @click="onReturn">Возврат</button>
+              <div class="meter">
+                <div class="label">Выигрыш</div>
+                <div class="value">{{ edJackPot }}</div>
+              </div>
+            </div>
+            <button class="btn tech-reset" @click="onTechReset">Тех. сброс</button>
+
+          </div>
+
+          <!-- Tokens panel -->
+          <div class="tokens-panel">
+            <div>
+              <div class="tokens-row" v-for="i in Math.floor(userCoinsCount / 30)">
+                <div class="token" v-for="i in 30" :key="'token1-'+i" @click.prevent="onInsertCoin"  style="cursor: pointer">5</div>
+              </div>
+              <div class="tokens-row">
+                <div class="token" v-for="i in userCoinsCount % 30" :key="'token2-'+i" @click.prevent="onInsertCoin" style="cursor: pointer">5</div>
+              </div>
+            </div>
+
+<!--            <div class="coin-controls">-->
+<!--              <button class="btn insert-coin" @click="onInsertCoin" :disabled="userCoinsCount <= 0 || isTrayClosed">Опустить жетон</button>-->
+<!--              <button class="btn bad-coin" @click="onBadCoin" :disabled="isTrayClosed">Фальшивый жетон</button>-->
+<!--            </div>-->
+
+            <div style="display: flex; gap: 20px;justify-content: flex-end;">
+              <div class="player-meter">
+                <div class="label">Игрок:</div>
+                <div class="value">{{ userCoinsCount }}</div>
+              </div>
+
+              <div class="fake-token-container" @click="onBadCoin" :style="{'opacity': isTrayClosed ? '0.5' : '1.0', 'cursor': isTrayClosed ? 'default' : 'pointer'}">
+                <div class="token fake">1р</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="meter">
-          <div class="label">Пользователь</div>
-          <div class="value">{{ userCoinsCount }}</div>
-        </div>
-        <div class="meter">
-          <div class="label">Ставка</div>
-          <div class="value">{{ edStake }}</div>
-        </div>
-        <div class="meter">
-          <div class="label">Выигрыш</div>
-          <div class="value win">{{ edJackPot }}</div>
-        </div>
-        <div class="meter">
-          <div class="label">Монетоприемник</div>
-          <div class="value">
-            <span :class="['tray', isTrayClosed ? 'closed' : 'open']">{{ isTrayClosed ? 'Закрыт' : 'Открыт' }}</span>
+
+        <!-- Right side: Log and protocol settings -->
+        <div class="right-panel">
+          <!-- Log window -->
+          <div class="log-container">
+            <pre ref="logWindow" class="log-window"><code style="white-space: break-spaces;">{{ logText }}</code></pre>
+          </div>
+
+          <!-- Protocol settings -->
+          <div class="protocol-settings">
+            <div class="log-settings">
+              <slot name="log-settings"></slot>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="reels">
-        <div class="reel" :class="{ spinning: timerSync1Running }">
-          <div class="symbol">{{ getBarrelNumber(barrel1) }}</div>
-          <div class="caption">Барабан 1</div>
-        </div>
-        <div class="reel" :class="{ spinning: timerSync2Running }">
-          <div class="symbol">{{ getBarrelNumber(barrel2) }}</div>
-          <div class="caption">Барабан 2</div>
-        </div>
-        <div class="reel" :class="{ spinning: timerSync3Running }">
-          <div class="symbol">{{ getBarrelNumber(barrel3) }}</div>
-          <div class="caption">Барабан 3</div>
-        </div>
+      <!-- Status bar with automaton states -->
+      <div class="win32-status-bar">
+        <slot name="states"></slot>
       </div>
-
-      <div class="controls">
-        <div class="coin-controls">
-          <button class="btn" @click="onInsertCoin" :disabled="userCoinsCount <= 0 || isTrayClosed">Опустить жетон</button>
-          <button class="btn ghost" @click="onBadCoin" :disabled="isTrayClosed">Бракованный жетон</button>
-        </div>
-        <div class="main-controls">
-          <button class="btn primary" @click="onPlay">Старт</button>
-          <button class="btn" @click="onReturn">Возврат денег</button>
-          <button class="btn danger" @click="onTechReset">Тех. сброс</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="logging">
-      <h3>Лог</h3>
-      <div class="log-settings">
-        <slot name="log-settings"></slot>
-      </div>
-      <pre ref="logWindow" class="log-window"><code>{{ logText }}</code></pre>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -189,139 +234,352 @@ onMounted(() => {
 </script>
 
 <style scoped>
-:root {
-  --bg: #0b0e16;
-  --panel: #121827;
-  --panel-2: #1b2338;
-  --text: #e6ecff;
-  --muted: #98a2b3;
-  --accent: #7c4dff;
-  --accent-2: #00e5ff;
-  --danger: #ff5a7a;
-  --success: #2dd4bf;
-}
-
 * { box-sizing: border-box; }
 
-.app {
-  min-height: 100vh;
-  background:
-      radial-gradient(900px 400px at 80% -10%, rgba(124,77,255,.18), transparent),
-      radial-gradient(700px 500px at -10% 110%, rgba(0,229,255,.14), transparent),
-      var(--bg);
-  color: var(--text);
-  padding: 24px;
-}
-
-.header {
+/* Win32 App Container */
+.win32-app {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f0f0;
+  padding: 20px;
   display: flex;
-  align-items: center;
+  justify-content: center;
+}
+
+/* Win32 Window */
+.win32-window {
+  background-color: #d4d0c8;
+  border: 2px solid #808080;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Win32 Title Bar */
+.win32-title-bar {
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  padding: 4px 8px;
+  font-weight: bold;
+  display: flex;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-.header h1 {
-  margin: 0;
-  font-weight: 800;
-  letter-spacing: .4px;
-  background: linear-gradient(90deg, #c86bfa, #8a7dff, #4de3ff);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.states { display: flex; gap: 8px; flex-wrap: wrap; }
-.state-pill {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--panel-2);
-  border: 1px solid rgba(255,255,255,.08);
-  font-weight: 700; font-size: 12px;
-}
-.state-pill.s0 { box-shadow: 0 0 0 1px rgba(45,212,191,.25) inset; }
-.state-pill.s1 { box-shadow: 0 0 0 1px rgba(255,209,102,.25) inset; }
-.state-pill.s2 { box-shadow: 0 0 0 1px rgba(0,229,255,.25) inset; }
-.state-pill.s3 { box-shadow: 0 0 0 1px rgba(255,90,122,.25) inset; }
-.state-pill.s4 { box-shadow: 0 0 0 1px rgba(124,77,255,.25) inset; }
-
-.panel {
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.4);
+  align-items: center;
 }
 
-.meters {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+.win32-title {
+  font-size: 14px;
+}
+
+/* Win32 Content */
+.win32-content {
+  padding: 10px;
+  display: flex;
   gap: 10px;
 }
-.meter {
-  background: var(--panel);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 12px;
-  padding: 10px 12px;
-}
-.meter .label { color: var(--muted); font-size: 12px; }
-.meter .value { font-size: 22px; font-weight: 800; }
-.meter .value .tray {
-  padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 800;
-}
-.tray.open { background: rgba(45,212,191,.14); color: #8ff3e7; }
-.tray.closed { background: rgba(255,90,122,.14); color: #ff9fb1; }
 
+/* Left Panel (Slot Machine + Tokens) */
+.left-panel {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Slot Machine Panel */
+.slot-panel {
+  position: relative;
+  background-color: black;
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+/* Reels */
 .reels {
-  margin: 16px 0 10px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 14px;
-  padding: 12px;
+  display: flex;
+  width: fit-content;
+  gap: 2px;
 }
-.reel {
-  height: 140px;
-  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 12px;
-  display: grid; place-items: center; gap: 6px;
-}
-.reel.spinning { box-shadow: inset 0 0 0 1px rgba(0,229,255,.2), 0 0 22px rgba(0,229,255,.15); }
-.symbol {
-  font-size: 64px;
-  font-weight: 900;
-  text-shadow: 0 6px 16px rgba(0,0,0,.35);
-}
-.caption { color: var(--muted); font-size: 12px; }
 
-.controls {
-  display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
+.reel {
+  height: 70px;
+  width: 50px;
+  background: linear-gradient(180deg, #eee 0%, #bbb 100%);
+  border: 2px solid #222;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px #333 inset;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
 }
-.coin-controls { display: flex; gap: 8px; flex-wrap: wrap; }
-.main-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.add {
+  display: none;
+}
+
+.reel.spinning .symbols-container {
+  display: flex;
+  flex-direction: column;
+  animation: spinInfinite 0.2s linear infinite;
+}
+
+.reel.spinning .add{
+  display: block;
+}
+
+@keyframes spinInfinite {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-240px); /* 5 символов по 90px высотой */
+  }
+}
+
+.symbol {
+  font-size: 48px;
+  color: #222;
+  line-height: 90px;
+  text-shadow: 0 2px 2px #888;
+  transition: transform 1s cubic-bezier(0.6, 0.1, 0.4, 1.4);
+}
+
+.meter {
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+}
+
+.meter .label {
+  font-size: 14px;
+  margin-right: 5px;
+  color: #eeeeee;
+  margin-bottom: 14px;
+}
+
+.meter .value {
+  background-color: #c0c0c0;
+  border: 1px inset #808080;
+  padding: 2px 5px;
+  min-width: 50px;
+  text-align: left;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+}
 
 .btn {
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  color: var(--text);
+  padding: 5px 10px;
+  border: 2px solid #808080;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  background-color: #d4d0c8;
   cursor: pointer;
-  font-weight: 800;
-  letter-spacing: .3px;
+  font-size: 14px;
+  min-width: 80px;
+  text-align: center;
 }
-.btn:hover { transform: translateY(-1px); }
-.btn.primary { background: linear-gradient(90deg, #8b5cf6, #06b6d4); border: none; }
-.btn.danger { background: linear-gradient(90deg, #ff5a7a, #f59e0b); border: none; }
-.btn.ghost { background: transparent; }
 
-.logging { margin-top: 16px; }
-.log-settings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 8px; }
-.log-group { background: var(--panel); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px 10px; }
-.log-group .title { font-weight: 900; margin-bottom: 6px; color: #b8c1ff; }
-.log-group label { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; font-size: 12px; color: var(--muted); }
+.btn:active {
+  border: 2px solid #808080;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.btn.game {
+  background: linear-gradient(135deg, #2e7d32, #66bb6a);
+  border-color: #4caf50;
+  color: #f8e09b;
+  text-shadow: 1px 1px 2px #000;
+  font-weight: bold;
+  font-size: 16px;
+  width: 90px;
+  margin-top: 30px;
+}
+
+.btn.return {
+  background: linear-gradient(135deg, #c62828, #ef5350);
+  border-color: #d32f2f;
+  color: #f8e09b;
+  text-shadow: 1px 1px 2px #000;
+  font-weight: bold;
+  font-size: 16px;
+  width: 90px;
+  margin-top: 30px;
+}
+
+.btn.tech-reset {
+  padding: 0 !important;
+  font-size: 12px;
+  min-width: 60px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.tokens-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.token:first-child {
+  margin-left: 0;
+}
+
+.token {
+  width: 30px;
+  height: 30px;
+  background-color: #ffcc00;
+  border: 1px solid #cc9900;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: -20px;
+}
+
+.token.fake {
+  background-color: #ffaa00;
+  border-color: #cc6600;
+}
+
+.fake-token-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fake-token-label {
+  font-size: 12px;
+}
+
+.coin-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.player-meter {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.player-meter .label {
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.player-meter .value {
+  background-color: #c0c0c0;
+  border: 1px inset #808080;
+
+}
+
+/* Right Panel (Log + Protocol Settings) */
+.right-panel {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+}
+
+/* Log Container */
+.log-container {
+  height: 400px;
+  width: 500px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #c0c0c0;
+  border: 2px solid #808080;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+
+.win32-panel-title {
+  background-color: #d4d0c8;
+  padding: 5px 8px;
+  font-weight: bold;
+  border-bottom: 1px solid #808080;
+  font-size: 14px;
+}
 
 .log-window {
-  border-radius: 12px;
-  padding: 12px;
-  max-height: 260px;
-  overflow: auto;
+  background-color: #ffffff;
+  border: 1px inset #808080;
+  padding: 8px;
+  height: 100%;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  margin: 0;
+  color: #000000;
+}
+
+/* Protocol Settings */
+.protocol-settings {
+}
+
+.log-settings {
+}
+
+
+/* Win32 Status Bar */
+.win32-status-bar {
+  background-color: #d4d0c8;
+  border-top: 1px solid #808080;
+  padding: 3px 5px;
+  display: flex;
+  gap: 10px;
+}
+
+.state-pill {
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid #808080;
+  background-color: #f0f0f0;
+}
+
+.state-pill.s0 { background-color: #e0ffe0; }
+.state-pill.s1 { background-color: #ffffd0; }
+.state-pill.s2 { background-color: #e0e0ff; }
+.state-pill.s3 { background-color: #ffe0e0; }
+.state-pill.s4 { background-color: #e0ffff; }
+
+/* Button states */
+.btn:disabled {
+  color: #808080;
+  background-color: #c0c0c0;
+}
+
+.insert-coin, .bad-coin {
+  font-size: 12px;
+  padding: 2px 5px;
+  min-width: 60px;
+}
+
+.tokens-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 </style>

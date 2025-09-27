@@ -28,31 +28,37 @@
 
     <template #log-settings>
       <div class="log-group">
-        <div class="title">A0</div>
-        <label><input type="checkbox" v-model="A0.LogWake" /> Wake</label>
-        <label><input type="checkbox" v-model="A0.LogStateChange" /> StateChange</label>
-        <label><input type="checkbox" v-model="A0.LogSleep" /> Sleep</label>
-        <label><input type="checkbox" v-model="A0.LogInput" /> Input</label>
-        <label><input type="checkbox" v-model="A0.LogOutput" /> Output</label>
-        <label><input type="checkbox" v-model="A0.LogError" /> Error</label>
+        <div class="title">A0 (Игровая машина)</div>
+        <div class="log-list">
+          <label><input type="checkbox" v-model="A0.LogWake" /> Вести протокол запуска</label>
+          <label><input type="checkbox" v-model="A0.LogStateChange" /> Вести протокол изменения состояния</label>
+          <label><input type="checkbox" v-model="A0.LogSleep" /> Вести протокол завершения</label>
+          <label><input type="checkbox" v-model="A0.LogInput" /> Вести протокол входных параметров</label>
+          <label><input type="checkbox" v-model="A0.LogOutput" /> Вести протокол выходных параметров</label>
+            <!--        <label><input type="checkbox" v-model="A0.LogError" /> Error</label>-->
+        </div>
       </div>
       <div class="log-group">
-        <div class="title">A1</div>
-        <label><input type="checkbox" v-model="A1.LogWake" /> Wake</label>
-        <label><input type="checkbox" v-model="A1.LogStateChange" /> StateChange</label>
-        <label><input type="checkbox" v-model="A1.LogSleep" /> Sleep</label>
-        <label><input type="checkbox" v-model="A1.LogInput" /> Input</label>
-        <label><input type="checkbox" v-model="A1.LogOutput" /> Output</label>
-        <label><input type="checkbox" v-model="A1.LogError" /> Error</label>
+        <div class="title">A1 (Жетоноприёмник)</div>
+        <div class="log-list">
+          <label><input type="checkbox" v-model="A1.LogWake" /> Вести протокол запуска</label>
+          <label><input type="checkbox" v-model="A1.LogStateChange" /> Вести протокол изменения состояния</label>
+          <label><input type="checkbox" v-model="A1.LogSleep" /> Вести протокол завершения</label>
+          <label><input type="checkbox" v-model="A1.LogInput" /> Вести протокол входных параметров</label>
+          <label><input type="checkbox" v-model="A1.LogOutput" /> Вести протокол выходных параметров</label>
+  <!--        <label><input type="checkbox" v-model="A1.LogError" /> Error</label>-->
+        </div>
       </div>
       <div class="log-group">
-        <div class="title">A2</div>
-        <label><input type="checkbox" v-model="A2.LogWake" /> Wake</label>
-        <label><input type="checkbox" v-model="A2.LogStateChange" /> StateChange</label>
-        <label><input type="checkbox" v-model="A2.LogSleep" /> Sleep</label>
-        <label><input type="checkbox" v-model="A2.LogInput" /> Input</label>
-        <label><input type="checkbox" v-model="A2.LogOutput" /> Output</label>
-        <label><input type="checkbox" v-model="A2.LogError" /> Error</label>
+        <div class="title">A2 (Игровые барабаны)</div>
+        <div class="log-list">
+          <label><input type="checkbox" v-model="A2.LogWake" /> Вести протокол запуска</label>
+          <label><input type="checkbox" v-model="A2.LogStateChange" /> Вести протокол изменения состояния</label>
+          <label><input type="checkbox" v-model="A2.LogSleep" /> Вести протокол завершения</label>
+          <label><input type="checkbox" v-model="A2.LogInput" /> Вести протокол входных параметров</label>
+          <label><input type="checkbox" v-model="A2.LogOutput" /> Вести протокол выходных параметров</label>
+  <!--        <label><input type="checkbox" v-model="A2.LogError" /> Error</label>-->
+        </div>
       </div>
     </template>
   </SlotMachineBase>

@@ -26,13 +26,15 @@
 
     <template #log-settings>
       <div class="log-group">
-        <div class="title">A0</div>
-        <label><input type="checkbox" v-model="A0.LogWake" /> Wake</label>
-        <label><input type="checkbox" v-model="A0.LogStateChange" /> StateChange</label>
-        <label><input type="checkbox" v-model="A0.LogSleep" /> Sleep</label>
-        <label><input type="checkbox" v-model="A0.LogInput" /> Input</label>
-        <label><input type="checkbox" v-model="A0.LogOutput" /> Output</label>
-        <label><input type="checkbox" v-model="A0.LogError" /> Error</label>
+        <div class="title">A (Перемноженный автомат)</div>
+        <div class="log-list">
+          <label><input type="checkbox" v-model="A0.LogWake" /> Вести протокол запуска</label>
+          <label><input type="checkbox" v-model="A0.LogStateChange" /> Вести протокол изменения состояния</label>
+          <label><input type="checkbox" v-model="A0.LogSleep" /> Вести протокол завершения</label>
+          <label><input type="checkbox" v-model="A0.LogInput" /> Вести протокол входных параметров</label>
+          <label><input type="checkbox" v-model="A0.LogOutput" /> Вести протокол выходных параметров</label>
+          <!--        <label><input type="checkbox" v-model="A0.LogError" /> Error</label>-->
+        </div>
       </div>
     </template>
   </SlotMachineBase>

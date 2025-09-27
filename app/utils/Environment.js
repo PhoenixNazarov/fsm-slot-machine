@@ -71,19 +71,25 @@ export class Environment {
         const b2 = this.GetBarrelNumber(this.Barrel2);
         const b3 = this.GetBarrelNumber(this.Barrel3);
 
-        if ((b1 === b2) && (b2 === b3)) {
-            if (b1 === 7) this.JackPotCoinsCount = 10 * this.Stake;
-            else this.JackPotCoinsCount = 5 * this.Stake;
-        } else if ((b1 + 1 === b2) && (b2 + 1 === b3)) {
-            this.JackPotCoinsCount = 4 * this.Stake;
-        } else if ((b1 === b2) || (b3 === b2) || (b3 === b2)) {
-            this.JackPotCoinsCount = this.Stake + 1;
-        } else if (b1 === 7) {
-            this.JackPotCoinsCount = 1;
-        } else if (Math.floor(b1 / 2) !== 0) {
+        if (b1 === b2 && b2 === b3) {
+            // три одинаковых
+            if (b1 === 7) this.JackPotCoinsCount = 10 * this.Stake; // три семерки
+            else this.JackPotCoinsCount = 5 * this.Stake;           // три других числа
+        } else if (b1 + 1 === b2 && b2 + 1 === b3) {
+            // три подряд
             this.JackPotCoinsCount = 7 * this.Stake;
+        } else if (b1 === b2 || b1 === b3 || b2 === b3) {
+            // два одинаковых
+            this.JackPotCoinsCount = 4 * this.Stake;
         } else {
             this.JackPotCoinsCount = 0;
+        }
+
+        // Дополнительные правила
+        if (b1 === 7) {
+            this.JackPotCoinsCount += 1; // +1 жетон
+        } else if (b1 % 2 !== 0) {
+            this.JackPotCoinsCount += 1; // +1 жетон за нечетное
         }
     }
     UpdateCoinImages() {
